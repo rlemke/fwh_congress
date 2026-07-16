@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fwh-congress"
+version = "0.1.0"
+description = "Facetwork domain: US congressional (voting) districts colored by the sitting representative's party"
+requires-python = ">=3.11"
+dependencies = ["requests", "pyshp>=2.3", "shapely>=2.0"]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0", "ruff>=0.8.0"]
+
+[project.entry-points."facetwork.domains"]
+congress = "congress:domain"
+
+[tool.setuptools.packages.find]
+where = ["src"]

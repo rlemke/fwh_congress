@@ -1,0 +1,51 @@
+// congress domain — US congressional (voting) districts + party affiliation.
+//
+// BuildDistrictPartyMap fetches the Census cartographic-boundary congressional
+// districts (119th Congress, 1:500k) and the public-domain
+// unitedstates/congress-legislators roster, joins the sitting representative's
+// party onto each district polygon, and renders a MapLibre categorical
+// choropleth (Democrat blue / Republican red / Independent purple / vacant
+// grey) with member popups. Output -> cache/congress/output/index.html.
+
+namespace congress.maps {
+    /** Join sitting-House-member party onto CD119 district polygons and render
+      * a categorical party choropleth. Non-voting delegate seats (DC +
+      * territories) render at reduced opacity; vacant seats grey. ``force``
+      * re-fetches the Census shapes + member roster. */
+    event facet BuildDistrictPartyMap(
+        force: Boolean = false
+    ) => (
+        html_path: String,
+        district_count: Int,
+        dem_count: Int,
+        rep_count: Int,
+        vacant_count: Int
+    ) with Effect(kind = "external") with Cost(tier = "expensive") with Timeout(minutes = 20)
+}
+
+namespace congress.workflows {
+    use congress.maps
+
+    /** Build the US voting-districts map: congressional districts colored by
+      * the party of the sitting representative. */
+    workflow BuildCongressPartyMap(
+        force: Boolean = false
+    ) => (
+        status: String,
+        html_path: String,
+        district_count: Int,
+        dem_count: Int,
+        rep_count: Int,
+        vacant_count: Int
+    ) andThen {
+        map = BuildDistrictPartyMap(force = $.force)
+        yield BuildCongressPartyMap(
+            status = "completed",
+            html_path = map.html_path,
+            district_count = map.district_count,
+            dem_count = map.dem_count,
+            rep_count = map.rep_count,
+            vacant_count = map.vacant_count
+        )
+    }
+}
