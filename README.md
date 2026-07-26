@@ -19,6 +19,22 @@ configured storage backend (MinIO/S3 on the fleet, local dir otherwise).
 Colors: Democrat `#2166ac`, Republican `#b2182b`, Independent `#6a3d9a`,
 vacant `#9e9e9e`.
 
+## Feature specifications
+
+Per-feature docs live in [`docs/`](docs/README.md) — one spec per capability of the
+single `BuildDistrictPartyMap` pipeline, each grounded in the FFL docstrings +
+handler/`_lib` code.
+
+| Spec | What it covers |
+|------|----------------|
+| [district-party-map](docs/district-party-map.md) | **Flagship.** The one facet + workflow: fetch → join → render the national choropleth (single-task). |
+| [data-sources](docs/data-sources.md) | Census CD119 shapefile (`pyshp`) + `congress-legislators` roster; cache-once fetch. |
+| [party-join](docs/party-join.md) | `district_key` FIPS+district join: at-large / delegate / vacant / third-party rules + party colors. |
+| [rendering](docs/rendering.md) | Self-contained MapLibre choropleth HTML: fill, delegate opacity, legend, search, About modal. |
+| [storage-and-cache](docs/storage-and-cache.md) | Backend-aware storage shim: local vs MinIO/S3 layout, cache/output paths, env overrides. |
+
+See [`docs/README.md`](docs/README.md) for the full index.
+
 ## Scope note
 
 "Voting districts" here means **House congressional districts**. The Census
