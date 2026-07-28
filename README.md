@@ -19,6 +19,41 @@ configured storage backend (MinIO/S3 on the fleet, local dir otherwise).
 Colors: Democrat `#2166ac`, Republican `#b2182b`, Independent `#6a3d9a`,
 vacant `#9e9e9e`.
 
+## FFL at a glance
+
+The domain is driven from [FFL](https://github.com/rlemke/facetwork/blob/main/docs/reference/language/grammar.md),
+Facetwork's workflow language. A step is `name = Facet(args)`, and later steps
+reference earlier ones as `step.field`:
+
+```ffl
+namespace my.congress {
+
+    use congress.maps
+
+    /** Rebuild the district-party map, optionally bypassing the cache. */
+    workflow RefreshPartyMap(force: Boolean = false) => (status: String, html_path: String, seats: Int) andThen {
+
+        map = congress.maps.BuildDistrictPartyMap(force = $.force)
+
+        yield RefreshPartyMap(
+            status = "completed",
+            html_path = map.html_path,
+            seats = map.district_count)
+    }
+}
+```
+
+```bash
+fw ffl run --primary my.ffl --library src/congress/ffl/congress.ffl \
+  --workflow my.congress.RefreshPartyMap --inputs '{"force": true}'
+```
+
+📖 **[docs/ffl-examples.md](docs/ffl-examples.md)** — the full example gallery:
+call-time mixins (timeout/retry), `catch`, `when` branching, wrapping the shipped
+workflow, and cross-domain composition (publishing the map). Every snippet there
+is compile-checked. This domain's single facet makes it a good place to learn the
+language.
+
 ## Feature specifications
 
 Per-feature docs live in [`docs/`](docs/README.md) — one spec per capability of the

@@ -35,6 +35,7 @@ the end-to-end pipeline that every other spec feeds.
 |------|----------------|
 | [rendering.md](rendering.md) | The self-contained MapLibre GL choropleth HTML: categorical fill, delegate opacity, legend with seat counts, search box, About modal, attribution. |
 | [storage-and-cache.md](storage-and-cache.md) | The backend-aware storage shim (`storage.py`): local dir vs MinIO/S3 layout, `localize`, stage-local finalize-on-close writes, cache/output paths, env overrides. |
+| [ffl-examples.md](ffl-examples.md) | **Usage patterns.** A gallery of complete, compile-checked FFL examples over this domain's facet — minimal workflow, `$`-scoping, call-time mixins, `catch`, `when`, wrapping the shipped workflow, cross-domain publish. |
 
 ---
 
