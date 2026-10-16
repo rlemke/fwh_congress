@@ -314,7 +314,7 @@ def _render_html(fc: dict, counts: dict[str, int]) -> str:
 <script>
 const FC={fc_js}, COLORS={colors_js}, COUNTS={counts_js};
 const map=new maplibregl.Map({{container:'map',style:{{version:8,
-  sources:{{bm:{{type:'raster',tiles:['https://a.basemaps.cartocdn.com/rastertiles/voyager/{{z}}/{{x}}/{{y}}.png','https://b.basemaps.cartocdn.com/rastertiles/voyager/{{z}}/{{x}}/{{y}}.png'],tileSize:256,attribution:'&copy; OpenStreetMap &copy; CARTO &middot; US Census &middot; unitedstates/congress-legislators'}}}},
+  sources:{{bm:{{type:'raster',tiles:['https://tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png'],tileSize:256,attribution:'&copy; OpenStreetMap &middot; US Census &middot; unitedstates/congress-legislators'}}}},
   layers:[{{id:'bm',type:'raster',source:'bm'}}]}},center:[-96,38],zoom:3.4}});
 map.addControl(new maplibregl.NavigationControl());
 const lg=document.getElementById('lgrows');
