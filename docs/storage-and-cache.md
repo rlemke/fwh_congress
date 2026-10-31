@@ -10,11 +10,14 @@
 A thin backend-aware storage shim — the same shape h1b / census-us / conflict use —
 so terminal runs and fleet runs share one cache and write outputs to the configured
 durable backend without the handler code caring whether that is a local directory or
-MinIO/S3. It wraps `facetwork.runtime.storage`.
+MinIO/S3. Since the storage consolidation `storage.py` is a thin shim over the shared
+`facetwork.domains.storage` (`domain_storage("congress")`, `nested` layout), which in
+turn sits on `facetwork.runtime.storage`; the shim only keeps this package's import
+path and public names.
 
 ## How it works
 
-Paths are computed from `_data_root()` = `FW_DATA_ROOT` or
+The shared layer computes paths from `_data_root()` = `FW_DATA_ROOT` or
 `facetwork.config.get_output_base()`. `is_remote(path)` is a simple `"://" in path`
 test, which selects the local vs object-store layout:
 
@@ -27,14 +30,14 @@ test, which selects the local vs object-store layout:
 
 I/O helpers hide the backend:
 
-- **`exists(path)`** → `get_storage_backend(path).exists(path)`.
+- **`exists(path)`** → the runtime backend's `exists`.
 - **`localize(path)`** → returns the path unchanged if local; otherwise pulls the
   remote object to a local temp file (used by `download_shapes` because `pyshp` needs
   files on disk).
 - **`open_read`** → `open(localize(path), …)`.
 - **`open_write`** (context manager) → for local paths, `makedirs` the parent and
-  `open` directly; for remote paths, write to a `mkstemp` temp file, then on close
-  stream it into `get_storage_backend(path).open(path, "wb")`. This **stage-local,
+  `open` directly; for remote paths, write to a `mkstemp` temp file, then on **clean**
+  exit stream it into the backend (an exception in the caller's body uploads nothing). This **stage-local,
   finalize-on-close** pattern is required because object stores do not do partial
   writes.
 
@@ -51,11 +54,9 @@ No domain data of its own; it moves the ZIP / JSON (cache) and `index.html` /
 
 ## External libraries / binaries
 
-- **`facetwork.config.get_output_base`** and **`facetwork.runtime.storage`**
-  (`get_storage_backend`, `localize`, `open`) — the framework storage layer; the
-  only non-stdlib imports. No boto3/pip S3 client is imported directly here (the
-  backend abstraction owns that).
-- Python stdlib `os` / `tempfile` / `contextlib`.
+- **`facetwork.domains.storage`** — the shared per-domain path convention + staged
+  writes, over **`facetwork.runtime.storage`** and **`facetwork.config.get_output_base`**.
+  No boto3/pip S3 client is imported here; the runtime's single S3 client owns that.
 
 ## Facets & workflows
 

@@ -19,8 +19,9 @@ district/state/member search box, member popups, and an "About this data" modal.
 1. **Inlined data** — the `FeatureCollection` (`FC`), `PARTY_COLORS` (`COLORS`), and
    the seat `counts` (`COUNTS`) are JSON-dumped into `<script>` consts. No external
    data fetch at view time.
-2. **Basemap** — a MapLibre style v8 with a single CARTO Voyager raster source
-   (`a`/`b.basemaps.cartocdn.com/rastertiles/voyager`), centered `[-96, 38]`, zoom
+2. **Basemap** — a MapLibre style v8 with a single keyless OpenStreetMap raster
+   source (`tile.openstreetmap.org`; CARTO was dropped after it began watermarking
+   unauthenticated tiles in Aug 2026), centered `[-96, 38]`, zoom
    `3.4`, plus a `NavigationControl`.
 3. **Fill layer** — `fill-color` is a MapLibre `['match', ['get','PARTY'], …]`
    expression mapping `Democrat`/`Republican`/`Independent` to their colors with the
@@ -56,7 +57,7 @@ three feed popups + search. The legend reads the `counts` dict.
 
 - **MapLibre GL JS `4.7.1`** — loaded from the unpkg CDN by the page (JS + CSS);
   **client-side only**, not a pip dependency. The map will not render offline.
-- **CARTO Voyager raster tiles** — the basemap, fetched by the browser at view time.
+- **OpenStreetMap raster tiles** — the basemap, fetched by the browser at view time.
 - No server-side rendering libraries: the HTML is built with plain Python
   f-strings + `json.dumps`; only the inline GeoJSON geometry came from `shapely`
   upstream in the join.
@@ -81,7 +82,7 @@ that the embedded `FC` is valid JSON).
 
 ## Gotchas & notes
 
-- **Needs internet at *view* time.** MapLibre JS/CSS and the CARTO tiles are CDN
+- **Needs internet at *view* time.** MapLibre JS/CSS and the OpenStreetMap tiles are CDN
   links; an air-gapped viewer sees a blank map even though the GeoJSON is inlined.
 - **Scope disclosure is baked into `desc`.** The "About this data" text states that
   "voting districts" = House districts and that precinct-level (VTD) results are out

@@ -76,7 +76,7 @@ All **pip**, no binaries:
   the Census ZIP.
 - **`shapely`** (`>=2.0`) — `simplify` + `mapping`/`shape` for the inline GeoJSON.
 - **MapLibre GL JS `4.7.1`** — client-side only, loaded from the unpkg CDN by the
-  output HTML (not a pip dep); CARTO Voyager raster basemap tiles.
+  output HTML (not a pip dep); OpenStreetMap raster basemap tiles.
 
 ## Facets & workflows
 
